@@ -564,9 +564,9 @@ func (s *Serialiser) Marker(m *models.AccountMarker) *Marker {
 }
 
 type List struct {
-	ID            snowflake.ID `json:"id,string"`
-	Title         string       `json:"title"`
-	RepliesPolicy string       `json:"replies_policy"`
+	ID            snowflake.ID         `json:"id,string"`
+	Title         string               `json:"title"`
+	RepliesPolicy models.RepliesPolicy `json:"replies_policy"`
 }
 
 func (s *Serialiser) List(l *models.AccountList) *List {

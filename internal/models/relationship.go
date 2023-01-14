@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql/driver"
 	"fmt"
 	"time"
 
@@ -88,20 +89,36 @@ type RelationshipRequest struct {
 	CreatedAt time.Time
 	// UpdatedAt is the time the request was last updated.
 	UpdatedAt time.Time
-	ActorID   snowflake.ID `gorm:"uniqueIndex:idx_actor_id_target_id;not null;"`
+	ActorID   snowflake.ID `sql:"unique('actor_id', 'target_id')" gorm:"not null"`
 	// Actor is the actor that is requesting the relationship change.
 	Actor    *Actor       `gorm:"constraint:OnDelete:CASCADE;<-:false;"`
-	TargetID snowflake.ID `gorm:"uniqueIndex:idx_actor_id_target_id;not null;"`
+	TargetID snowflake.ID `sql:"unique('actor_id', 'target_id')" gorm:"not null"`
 	// Target is the actor that is being followed or unfollowed.
 	Target *Actor `gorm:"constraint:OnDelete:CASCADE;<-:false;"`
 	// Action is the action to perform, either follow or unfollow.
-	Action string `gorm:"type:enum('follow', 'unfollow');not null"`
+	Action Action `gorm:"type:action;not null"`
 	// Attempts is the number of times the request has been attempted.
 	Attempts uint32 `gorm:"not null;default:0"`
 	// LastAttempt is the time the request was last attempted.
 	LastAttempt time.Time
 	// LastResult is the result of the last attempt if it failed.
 	LastResult string `gorm:"size:255;not null;default:''"`
+}
+
+type Action string
+
+const (
+	FollowAction   Action = "follow"
+	UnFollowAction Action = "unfollow"
+)
+
+func (self *Action) Scan(value interface{}) error {
+	*self = Action(value.([]byte))
+	return nil
+}
+
+func (self Action) Value() (driver.Value, error) {
+	return string(self), nil
 }
 
 type Relationships struct {

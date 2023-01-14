@@ -14,7 +14,7 @@ import (
 type Actor struct {
 	snowflake.ID   `gorm:"primarykey;autoIncrement:false"`
 	UpdatedAt      time.Time
-	Type           ActorType `sql:"type:TEXT CHECK('Person', 'Application', 'Service', 'Group', 'Organization', 'LocalPerson')" gorm:"column:type;default:'Person';not null"`
+	Type           ActorType `gorm:"column:type;type:actor_type;default:'Person';not null"`
 	URI            string    `gorm:"uniqueIndex;size:128;not null"`
 	Name           string    `gorm:"size:64;uniqueIndex:idx_actor_name_domain;not null"`
 	Domain         string    `gorm:"size:64;uniqueIndex:idx_actor_name_domain;not null"`

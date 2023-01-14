@@ -49,9 +49,17 @@ type AccountList struct {
 	snowflake.ID  `gorm:"primarykey;autoIncrement:false"`
 	AccountID     snowflake.ID        `gorm:"not null;"`
 	Title         string              `gorm:"size:64"`
-	RepliesPolicy string              `gorm:"enum('public','followers','none');not null;default:'public'"`
+	RepliesPolicy RepliesPolicy       `gorm:"type:replies_policy;not null;default:'public'"`
 	Members       []AccountListMember `gorm:"constraint:OnDelete:CASCADE;"`
 }
+
+type RepliesPolicy string
+
+const (
+	PublicRepliesPolicy    RepliesPolicy = "public"
+	FollowersRepliesPolicy RepliesPolicy = "followers"
+	NoneRepliesPolicy      RepliesPolicy = "none"
+)
 
 type AccountListMember struct {
 	AccountListID snowflake.ID `gorm:"primarykey;autoIncrement:false"`

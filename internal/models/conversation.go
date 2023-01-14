@@ -14,7 +14,7 @@ type Conversation struct {
 	ID         uint32 `gorm:"primarykey"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	Visibility Visibility `sql:"type:TEXT CHECK('public', 'unlisted', 'private', 'direct', 'limited')" gorm:"column:visibility;not null"`
+	Visibility Visibility `gorm:"column:visibility;type:visbility;not null"`
 }
 
 func NewConversations(db *gorm.DB) *Conversations {
