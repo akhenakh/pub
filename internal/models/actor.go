@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"net/http"
@@ -13,21 +14,41 @@ import (
 type Actor struct {
 	snowflake.ID   `gorm:"primarykey;autoIncrement:false"`
 	UpdatedAt      time.Time
-	Type           string `gorm:"type:enum('Person', 'Application', 'Service', 'Group', 'Organization', 'LocalPerson');default:'Person';not null"`
-	URI            string `gorm:"uniqueIndex;size:128;not null"`
-	Name           string `gorm:"size:64;uniqueIndex:idx_actor_name_domain;not null"`
-	Domain         string `gorm:"size:64;uniqueIndex:idx_actor_name_domain;not null"`
-	DisplayName    string `gorm:"size:128;not null"`
-	Locked         bool   `gorm:"default:false;not null"`
-	Note           string `gorm:"type:text"` // max 2^16
-	FollowersCount int32  `gorm:"default:0;not null"`
-	FollowingCount int32  `gorm:"default:0;not null"`
-	StatusesCount  int32  `gorm:"default:0;not null"`
+	Type           ActorType `sql:"type:TEXT CHECK('Person', 'Application', 'Service', 'Group', 'Organization', 'LocalPerson')" gorm:"column:type;default:'Person';not null"`
+	URI            string    `gorm:"uniqueIndex;size:128;not null"`
+	Name           string    `gorm:"size:64;uniqueIndex:idx_actor_name_domain;not null"`
+	Domain         string    `gorm:"size:64;uniqueIndex:idx_actor_name_domain;not null"`
+	DisplayName    string    `gorm:"size:128;not null"`
+	Locked         bool      `gorm:"default:false;not null"`
+	Note           string    `gorm:"type:text"` // max 2^16
+	FollowersCount int32     `gorm:"default:0;not null"`
+	FollowingCount int32     `gorm:"default:0;not null"`
+	StatusesCount  int32     `gorm:"default:0;not null"`
 	LastStatusAt   time.Time
 	Avatar         string            `gorm:"size:255"`
 	Header         string            `gorm:"size:255"`
 	PublicKey      []byte            `gorm:"type:blob;not null"`
 	Attributes     []*ActorAttribute `gorm:"constraint:OnDelete:CASCADE;"`
+}
+
+type ActorType string
+
+const (
+	PersonActorType       ActorType = "Person"
+	ApplicationActorType  ActorType = "Application"
+	ServiceActorType      ActorType = "Service"
+	GroupActorType        ActorType = "Group"
+	OrganizationActorType ActorType = "Organization"
+	LocalPersonActorType  ActorType = "LocalPerson"
+)
+
+func (self *ActorType) Scan(value interface{}) error {
+	*self = ActorType(value.([]byte))
+	return nil
+}
+
+func (self ActorType) Value() (driver.Value, error) {
+	return string(self), nil
 }
 
 func (a *Actor) AfterCreate(tx *gorm.DB) error {
