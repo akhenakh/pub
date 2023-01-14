@@ -336,7 +336,7 @@ func (i *inboxProcessor) processCreateNote(create map[string]any) error {
 			InReplyToActorID: inReplyToActorID(inReplyTo),
 			Sensitive:        boolFromAny(create["sensitive"]),
 			SpoilerText:      stringFromAny(create["summary"]),
-			Visibility:       vis,
+			Visibility:       models.Visibility(vis),
 			Language:         "en",
 			Note:             stringFromAny(create["content"]),
 			Attachments:      attachmentsToStatusAttachments(anyToSlice(create["attachment"])),

@@ -228,7 +228,7 @@ func (s *Serialiser) Status(st *models.Status) *Status {
 		InReplyToAccountID: st.InReplyToActorID,
 		Sensitive:          st.Sensitive,
 		SpoilerText:        st.SpoilerText,
-		Visibility:         st.Visibility,
+		Visibility:         string(st.Visibility),
 		Language:           nilIfEmpty(st.Language),
 		URI:                st.URI,
 		URL:                nil, // no web representation

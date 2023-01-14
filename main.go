@@ -5,6 +5,7 @@ import (
 
 	"github.com/alecthomas/kong"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
@@ -15,12 +16,12 @@ type Context struct {
 	Debug bool
 
 	gorm.Config
-	gorm.Dialector
 }
 
 var cli struct {
 	LogSQL bool   `help:"Log SQL queries."`
 	DSN    string `help:"data source name" default:"pub:pub@tcp(localhost:3306)/pub"`
+	Driver string `enum:"mysql,sqlite" help:"The database driver to use." required:"" default:"mysql"`
 
 	AutoMigrate          AutoMigrateCmd          `cmd:"" help:"Automigrate the database."`
 	CreateAccount        CreateAccountCmd        `cmd:"" help:"Create a new account."`
@@ -33,6 +34,19 @@ var cli struct {
 
 func main() {
 	ctx := kong.Parse(&cli)
+
+	var dialect gorm.Dialector
+
+	switch cli.Driver {
+	case "mysql":
+		dialect = mysql.New(mysql.Config{
+			DSN:                       mergeOptions(cli.DSN, "charset=utf8mb4&parseTime=True&loc=Local"),
+			SkipInitializeWithVersion: false, // auto configure based on currently MySQL version
+
+		})
+	case "sqlite":
+		dialect = sqlite.Open(cli.DSN)
+	}
 	err := ctx.Run(&Context{
 		Debug: cli.LogSQL,
 		Config: gorm.Config{
@@ -42,12 +56,8 @@ func main() {
 				}
 				return logger.Warn
 			}()),
+			Dialector: dialect,
 		},
-		Dialector: mysql.New(mysql.Config{
-			DSN:                       mergeOptions(cli.DSN, "charset=utf8mb4&parseTime=True&loc=Local"),
-			SkipInitializeWithVersion: false, // auto configure based on currently MySQL version
-
-		}),
 	})
 	ctx.FatalIfErrorf(err)
 }

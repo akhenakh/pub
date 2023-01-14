@@ -84,7 +84,7 @@ func UsersShow(env *Env, w http.ResponseWriter, r *http.Request) error {
 			case "LocalPerson":
 				return "Person"
 			default:
-				return a.Type
+				return string(a.Type)
 			}
 		}(&actor),
 		"following":                 actor.URI + "/following",

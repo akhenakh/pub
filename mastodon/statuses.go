@@ -97,7 +97,7 @@ func StatusesCreate(env *Env, w http.ResponseWriter, r *http.Request) error {
 		URI:            fmt.Sprintf("https://%s/users/%s/%d", actor.Domain, actor.Name, id),
 		Sensitive:      toot.Sensitive,
 		SpoilerText:    toot.SpoilerText,
-		Visibility:     toot.Visibility,
+		Visibility:     models.Visibility(toot.Visibility),
 		Language:       toot.Language,
 		Note:           toot.Status,
 	}
@@ -311,7 +311,7 @@ func thread(id snowflake.ID, statuses []models.Status) ([]*models.Status, []*mod
 	}
 
 	var ancestors []*models.Status
-	var l = ids[id].parent
+	l := ids[id].parent
 	for l != nil {
 		ancestors = append(ancestors, l.status)
 		l = l.parent

@@ -26,7 +26,6 @@ type Env struct {
 }
 
 func (e *Env) GetKey(keyID string) (crypto.PublicKey, error) {
-
 	// defer resolving the admin actor until we need use it to fetch the remote actor
 	fetch := func(uri string) (*models.Actor, error) {
 		var instance models.Instance
@@ -131,6 +130,11 @@ func boolFromAny(v any) bool {
 func stringFromAny(v any) string {
 	s, _ := v.(string)
 	return s
+}
+
+func actorTypeFromAny(v any) models.ActorType {
+	s, _ := v.(string)
+	return models.ActorType(s)
 }
 
 func mapFromAny(v any) map[string]any {

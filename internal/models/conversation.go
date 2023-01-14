@@ -14,11 +14,7 @@ type Conversation struct {
 	ID         uint32 `gorm:"primarykey"`
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	Visibility string `gorm:"type:enum('public', 'unlisted', 'private', 'direct', 'limited');not null"`
-}
-
-type Conversations struct {
-	db *gorm.DB
+	Visibility Visibility `sql:"type:TEXT CHECK('public', 'unlisted', 'private', 'direct', 'limited')" gorm:"column:visibility;not null"`
 }
 
 func NewConversations(db *gorm.DB) *Conversations {
@@ -30,7 +26,7 @@ func NewConversations(db *gorm.DB) *Conversations {
 // New returns a new Conversations with the given visibility.
 func (c *Conversations) New(vis string) (*Conversation, error) {
 	conv := Conversation{
-		Visibility: vis,
+		Visibility: Visibility(vis),
 	}
 	if err := c.db.Create(&conv).Error; err != nil {
 		return nil, err
@@ -41,7 +37,7 @@ func (c *Conversations) New(vis string) (*Conversation, error) {
 func (c *Conversations) FindOrCreate(id uint32, vis string) (*Conversation, error) {
 	var conversation Conversation
 	if err := c.db.FirstOrCreate(&conversation, Conversation{
-		Visibility: vis,
+		Visibility: Visibility(vis),
 	}).Error; err != nil {
 		return nil, err
 	}
