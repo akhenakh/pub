@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql/driver"
 	"fmt"
 	"time"
 
@@ -81,20 +82,36 @@ type ReactionRequest struct {
 	CreatedAt time.Time
 	// UpdatedAt is the time the request was last updated.
 	UpdatedAt time.Time
-	ActorID   snowflake.ID `gorm:"uniqueIndex:idx_actor_id_target_id;not null;"`
+	ActorID   snowflake.ID `sql:"unique('actor_id', 'target_id')" gorm:"not null"`
 	// Actor is the actor that is requesting the reaction change.
 	Actor    *Actor       `gorm:"constraint:OnDelete:CASCADE;"`
-	TargetID snowflake.ID `gorm:"uniqueIndex:idx_actor_id_target_id;not null;"`
+	TargetID snowflake.ID `sql:"unique('actor_id', 'target_id')" gorm:"not null"`
 	// Target is the status that is being reacted to.
 	Target *Status `gorm:"constraint:OnDelete:CASCADE;"`
 	// Action is the action to perform, either follow or unfollow.
-	Action string `gorm:"type:enum('like', 'unlike');not null"`
+	Action ActionType `gorm:"type:action_type;column:action;not null"`
 	// Attempts is the number of times the request has been attempted.
 	Attempts uint32 `gorm:"not null;default:0"`
 	// LastAttempt is the time the request was last attempted.
 	LastAttempt time.Time
 	// LastResult is the result of the last attempt if it failed.
 	LastResult string `gorm:"size:255;not null;default:''"`
+}
+
+type ActionType string
+
+const (
+	LikeActionType   ActionType = "like"
+	UnlikeActionType ActionType = "unlike"
+)
+
+func (self *ActionType) Scan(value interface{}) error {
+	*self = ActionType(value.([]byte))
+	return nil
+}
+
+func (self ActionType) Value() (driver.Value, error) {
+	return string(self), nil
 }
 
 type Reactions struct {
