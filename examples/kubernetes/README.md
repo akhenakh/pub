@@ -19,7 +19,7 @@ items:
       matchLabels:
         app: pub
     template:
-	  labels:
+      labels:
           app: pub
       spec:
         containers:
