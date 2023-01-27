@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/alecthomas/kong"
@@ -48,7 +49,7 @@ func main() {
 
 		})
 	case "sqlite":
-		dialect = sqlite.Open(cli.DSN)
+		dialect = sqlite.Open(fmt.Sprintf("%s?_pragma=foreign_keys(1)", cli.DSN))
 	}
 	err := ctx.Run(&Context{
 		Debug: cli.LogSQL,
