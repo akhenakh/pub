@@ -9,6 +9,7 @@ import (
 
 	"github.com/davecheney/pub/internal/snowflake"
 	"github.com/davecheney/pub/internal/streaming"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -25,14 +26,14 @@ type Status struct {
 	InReplyToID      *snowflake.ID
 	InReplyToActorID *snowflake.ID
 	Sensitive        bool
-	SpoilerText      string     `gorm:"size:128"`
-	Visibility       Visibility `gorm:"column:visibility;type:vsibility;not null"`
-	Language         string     `gorm:"size:2"`
-	Note             string     `gorm:"type:text"`
-	URI              string     `gorm:"uniqueIndex;size:128"`
-	RepliesCount     int        `gorm:"not null;default:0"`
-	ReblogsCount     int        `gorm:"not null;default:0"`
-	FavouritesCount  int        `gorm:"not null;default:0"`
+	SpoilerText      string `gorm:"size:128"`
+	Visibility       string `gorm:"type:enum('public', 'unlisted', 'private', 'direct', 'limited')"`
+	Language         string `gorm:"size:2"`
+	Note             string `gorm:"type:text"`
+	URI              string `gorm:"uniqueIndex;size:128"`
+	RepliesCount     int    `gorm:"not null;default:0"`
+	ReblogsCount     int    `gorm:"not null;default:0"`
+	FavouritesCount  int    `gorm:"not null;default:0"`
 	ReblogID         *snowflake.ID
 	Reblog           *Status             `gorm:"<-:false;"` // don't update reblog on status update
 	Reaction         *Reaction           `gorm:"<-:false;"` // don't update reaction on status update

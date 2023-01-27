@@ -2,10 +2,12 @@ package models
 
 import (
 	"database/sql/driver"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/davecheney/pub/internal/snowflake"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -14,7 +16,7 @@ import (
 type Reaction struct {
 	StatusID   snowflake.ID `gorm:"primarykey;autoIncrement:false"`
 	Status     *Status      `gorm:"constraint:OnDelete:CASCADE;<-:false"`
-	ActorID    snowflake.ID `gorm:"primarykey;autoIncrement:false"`
+	ActorID    snowflake.ID `gorm:"uniqueIndex:idx_actor_id_target_id;not null;"`
 	Actor      *Actor       `gorm:"constraint:OnDelete:CASCADE;<-:false"`
 	Favourited bool         `gorm:"not null;default:false"`
 	Reblogged  bool         `gorm:"not null;default:false"`
@@ -89,7 +91,7 @@ type ReactionRequest struct {
 	// Target is the status that is being reacted to.
 	Target *Status `gorm:"constraint:OnDelete:CASCADE;"`
 	// Action is the action to perform, either follow or unfollow.
-	Action ActionType `gorm:"type:action_type;column:action;not null"`
+	Action string `gorm:"type:enum('like', 'unlike');not null"`
 	// Attempts is the number of times the request has been attempted.
 	Attempts uint32 `gorm:"not null;default:0"`
 	// LastAttempt is the time the request was last attempted.
@@ -106,12 +108,32 @@ const (
 )
 
 func (t *ActionType) Scan(value interface{}) error {
-	*t = ActionType(value.([]byte))
+	var pt ActionType
+	if value == nil {
+		*t = ""
+		return nil
+	}
+	st, ok := value.([]uint8)
+	if !ok {
+		return errors.New("Invalid data for action type")
+	}
+
+	pt = ActionType(string(st))
+
+	switch pt {
+	case LikeActionType, UnlikeActionType:
+		*t = pt
+		return nil
+	}
 	return nil
 }
 
 func (t ActionType) Value() (driver.Value, error) {
-	return string(t), nil
+	switch t {
+	case LikeActionType, UnlikeActionType:
+		return string(t), nil
+	}
+	return nil, errors.New("Invalid action type value")
 }
 
 type Reactions struct {

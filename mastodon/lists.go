@@ -66,7 +66,7 @@ func ListsCreate(env *Env, w http.ResponseWriter, r *http.Request) error {
 	list := models.AccountList{
 		ID:            snowflake.Now(),
 		Title:         params.Title,
-		RepliesPolicy: models.RepliesPolicy(params.RepliesPolicy),
+		RepliesPolicy: params.RepliesPolicy,
 	}
 	if err := env.DB.Model(user).Association("Lists").Append(&list); err != nil {
 		return err

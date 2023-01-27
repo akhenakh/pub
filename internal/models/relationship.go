@@ -2,10 +2,12 @@ package models
 
 import (
 	"database/sql/driver"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/davecheney/pub/internal/snowflake"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -96,7 +98,7 @@ type RelationshipRequest struct {
 	// Target is the actor that is being followed or unfollowed.
 	Target *Actor `gorm:"constraint:OnDelete:CASCADE;<-:false;"`
 	// Action is the action to perform, either follow or unfollow.
-	Action Action `gorm:"type:action;not null"`
+	Action string `gorm:"type:enum('follow', 'unfollow');not null"`
 	// Attempts is the number of times the request has been attempted.
 	Attempts uint32 `gorm:"not null;default:0"`
 	// LastAttempt is the time the request was last attempted.
@@ -113,12 +115,32 @@ const (
 )
 
 func (a *Action) Scan(value interface{}) error {
-	*a = Action(value.([]byte))
+	var pa Action
+	if value == nil {
+		*a = ""
+		return nil
+	}
+	st, ok := value.([]uint8)
+	if !ok {
+		return errors.New("Invalid data for action")
+	}
+
+	pa = Action(string(st))
+
+	switch pa {
+	case FollowAction, UnFollowAction:
+		*a = pa
+		return nil
+	}
 	return nil
 }
 
 func (a Action) Value() (driver.Value, error) {
-	return string(a), nil
+	switch a {
+	case FollowAction, UnFollowAction:
+		return string(a), nil
+	}
+	return nil, errors.New("Invalid action value")
 }
 
 type Relationships struct {

@@ -2,7 +2,9 @@ package models
 
 import (
 	"database/sql/driver"
+	"errors"
 
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -22,10 +24,30 @@ const (
 )
 
 func (v *Visibility) Scan(value interface{}) error {
-	*v = Visibility(value.([]byte))
+	var pv Visibility
+	if value == nil {
+		*v = ""
+		return nil
+	}
+	st, ok := value.([]uint8)
+	if !ok {
+		return errors.New("Invalid data for visibility")
+	}
+
+	pv = Visibility(string(st))
+
+	switch pv {
+	case PublicVisibility, UnlistedVisibility, PrivateVisibility, DirectVisibility, LimitedVisibility:
+		*v = pv
+		return nil
+	}
 	return nil
 }
 
 func (v Visibility) Value() (driver.Value, error) {
-	return string(v), nil
+	switch v {
+	case PublicVisibility, UnlistedVisibility, PrivateVisibility, DirectVisibility, LimitedVisibility:
+		return string(v), nil
+	}
+	return nil, errors.New("Invalid visiblity value")
 }
