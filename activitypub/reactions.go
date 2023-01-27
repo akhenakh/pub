@@ -72,9 +72,9 @@ func (rrp *ReactionRequestProcessor) processRequest(request *models.ReactionRequ
 	}
 
 	switch request.Action {
-	case "like":
+	case models.LikeActionType:
 		return rrp.processLikeRequest(account, request.Target)
-	case "unlike":
+	case models.UnlikeActionType:
 		return rrp.processUnlikeRequest(account, request.Target)
 	default:
 		return fmt.Errorf("unknown action %q", request.Action)
