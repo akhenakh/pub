@@ -132,11 +132,6 @@ func stringFromAny(v any) string {
 	return s
 }
 
-func actorTypeFromAny(v any) models.ActorType {
-	s, _ := v.(string)
-	return models.ActorType(s)
-}
-
 func mapFromAny(v any) map[string]any {
 	m, _ := v.(map[string]any)
 	return m

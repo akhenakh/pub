@@ -81,7 +81,7 @@ func UsersShow(env *Env, w http.ResponseWriter, r *http.Request) error {
 		"id": actor.URI,
 		"type": func(a *models.Actor) string {
 			switch a.Type {
-			case models.LocalPersonActorType:
+			case string(models.LocalPersonActorType):
 				return "Person"
 			default:
 				return string(a.Type)
