@@ -1,11 +1,10 @@
 module github.com/davecheney/pub
 
-go 1.19
+go 1.20
 
 require (
 	github.com/alecthomas/kong v0.7.1
-	github.com/carlmjohnson/requests v0.22.3
-	github.com/glebarez/sqlite v1.6.0
+	github.com/carlmjohnson/requests v0.23.1
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/go-fed/httpsig v1.1.0
 	github.com/go-json-experiment/json v0.0.0-20221028162351-3fecd76f5acd
@@ -20,6 +19,7 @@ require (
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/glebarez/go-sqlite v1.20.0 // indirect
+	github.com/glebarez/sqlite v1.6.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
