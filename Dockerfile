@@ -12,4 +12,4 @@ WORKDIR /root/
 EXPOSE 9999
 ENTRYPOINT ["/root/pub"]
 
-CMD [ "--driver", "sqlite", "--dsn" ,"/data/db.sqlite", "serve", "--addr", "*:9999"]
+CMD [ "--driver", "sqlite", "--dsn" ,"/data/db.sqlite", "serve", "--addr", ":9999"]
