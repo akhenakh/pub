@@ -44,14 +44,14 @@ func (r *Reaction) BeforeUpdate(tx *gorm.DB) error {
 		return tx.Create(&ReactionRequest{
 			ActorID:  r.ActorID,
 			TargetID: r.StatusID,
-			Action:   "unlike",
+			Action:   UnlikeActionType,
 		}).Error
 	case !original.Favourited && r.Favourited:
 		// like
 		return tx.Create(&ReactionRequest{
 			ActorID:  r.ActorID,
 			TargetID: r.StatusID,
-			Action:   "like",
+			Action:   LikeActionType,
 		}).Error
 	default:
 		return nil
@@ -192,7 +192,7 @@ func (r *Reactions) Unbookmark(status *Status, actor *Actor) (*Reaction, error) 
 func (r *Reactions) Reblog(status *Status, actor *Actor) (*Status, error) {
 	return withTransaction(r.db, func(tx *gorm.DB) (*Status, error) {
 		conv := Conversation{
-			Visibility: "public",
+			Visibility: PublicVisibility,
 		}
 		if err := r.db.Create(&conv).Error; err != nil {
 			return nil, err

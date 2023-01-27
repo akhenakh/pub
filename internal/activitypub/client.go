@@ -94,7 +94,7 @@ func (c *Client) Follow(follower, target string) error {
 	return c.Post(inbox, map[string]any{
 		"@context": "https://www.w3.org/ns/activitystreams",
 		"id":       uuid.New().String(),
-		"type":     "Follow",
+		"type":     models.FollowAction,
 		"object":   target,
 		"actor":    follower,
 	})
@@ -119,7 +119,7 @@ func (c *Client) Unfollow(follower, target string) error {
 		"id":       uuid.New().String(),
 		"type":     "Undo",
 		"object": map[string]any{
-			"type":   "Follow",
+			"type":   models.FollowAction,
 			"object": target,
 			"actor":  follower,
 		},
@@ -144,7 +144,7 @@ func (c *Client) Like(liking, target string) error {
 	return c.Post(inbox, map[string]any{
 		"@context": "https://www.w3.org/ns/activitystreams",
 		"id":       uuid.New().String(),
-		"type":     "Like",
+		"type":     models.LikeActionType,
 		"object":   target,
 		"actor":    liking,
 	})
@@ -169,7 +169,7 @@ func (c *Client) Unlike(liking, target string) error {
 		"id":       uuid.New().String(),
 		"type":     "Undo",
 		"object": map[string]any{
-			"type":   "Like",
+			"type":   models.LikeActionType,
 			"object": target,
 			"actor":  liking,
 		},

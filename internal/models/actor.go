@@ -73,15 +73,15 @@ func (a *Actor) IsBot() bool {
 }
 
 func (a *Actor) IsPerson() bool {
-	return a.Type == "Person" || a.Type == "LocalPerson"
+	return a.Type == PersonActorType || a.Type == LocalPersonActorType
 }
 
 func (a *Actor) IsLocal() bool {
-	return a.Type == "LocalPerson"
+	return a.Type == LocalPersonActorType
 }
 
 func (a *Actor) IsGroup() bool {
-	return a.Type == "Group"
+	return a.Type == GroupActorType
 }
 
 func (a *Actor) PublicKeyID() string {

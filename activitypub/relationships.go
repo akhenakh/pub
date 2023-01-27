@@ -72,9 +72,9 @@ func (rrp *RelationshipRequestProcessor) processRequest(request *models.Relation
 	}
 
 	switch request.Action {
-	case "follow":
+	case models.FollowAction:
 		return rrp.processFollowRequest(account, request.Target)
-	case "unfollow":
+	case models.UnFollowAction:
 		return rrp.processUnfollowRequest(account, request.Target)
 	default:
 		return fmt.Errorf("unknown action %q", request.Action)
