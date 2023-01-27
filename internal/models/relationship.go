@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/davecheney/pub/internal/snowflake"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -98,7 +97,7 @@ type RelationshipRequest struct {
 	// Target is the actor that is being followed or unfollowed.
 	Target *Actor `gorm:"constraint:OnDelete:CASCADE;<-:false;"`
 	// Action is the action to perform, either follow or unfollow.
-	Action string `gorm:"type:enum('follow', 'unfollow');not null"`
+	Action Action `gorm:"type:action;not null"`
 	// Attempts is the number of times the request has been attempted.
 	Attempts uint32 `gorm:"not null;default:0"`
 	// LastAttempt is the time the request was last attempted.

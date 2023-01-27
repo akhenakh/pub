@@ -3,8 +3,6 @@ package models
 import (
 	"database/sql/driver"
 	"errors"
-
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 type Visibility string

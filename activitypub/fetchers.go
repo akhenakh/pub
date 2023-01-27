@@ -45,7 +45,7 @@ func (f *RemoteActorFetcher) Fetch(uri string) (*models.Actor, error) {
 
 	return &models.Actor{
 		ID:           snowflake.TimeToID(published),
-		Type:         stringFromAny(obj["type"]),
+		Type:         ActorTypeFromAny(obj["type"]),
 		Name:         stringFromAny(obj["preferredUsername"]),
 		Domain:       u.Host,
 		URI:          stringFromAny(obj["id"]),
@@ -159,7 +159,7 @@ func (f *RemoteStatusFetcher) Fetch(uri string) (*models.Status, error) {
 		conversationID = inReplyTo.ConversationID
 	} else {
 		conv := models.Conversation{
-			Visibility: visibility,
+			Visibility: models.Visibility(visibility),
 		}
 		if err := f.db.Create(&conv).Error; err != nil {
 			return nil, err

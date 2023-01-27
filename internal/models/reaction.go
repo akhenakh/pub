@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/davecheney/pub/internal/snowflake"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -91,7 +90,7 @@ type ReactionRequest struct {
 	// Target is the status that is being reacted to.
 	Target *Status `gorm:"constraint:OnDelete:CASCADE;"`
 	// Action is the action to perform, either follow or unfollow.
-	Action string `gorm:"type:enum('like', 'unlike');not null"`
+	Action ActionType `gorm:"type:action_type;not null"`
 	// Attempts is the number of times the request has been attempted.
 	Attempts uint32 `gorm:"not null;default:0"`
 	// LastAttempt is the time the request was last attempted.
@@ -236,7 +235,7 @@ func (r *Reactions) Reblog(status *Status, actor *Actor) (*Status, error) {
 			ActorID:        actor.ID,
 			Actor:          actor,
 			ConversationID: conv.ID,
-			Visibility:     conv.Visibility,
+			Visibility:     Visibility(conv.Visibility),
 			ReblogID:       &status.ID,
 			Reblog:         status,
 			URI:            fmt.Sprintf("%s/statuses/%d", actor.URI, id),

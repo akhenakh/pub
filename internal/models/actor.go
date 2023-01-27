@@ -8,23 +8,22 @@ import (
 	"time"
 
 	"github.com/davecheney/pub/internal/snowflake"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"gorm.io/gorm"
 )
 
 type Actor struct {
 	snowflake.ID   `gorm:"primarykey;autoIncrement:false"`
 	UpdatedAt      time.Time
-	Type           string `gorm:"type:enum('Person', 'Application', 'Service', 'Group', 'Organization', 'LocalPerson');default:'Person';not null"`
-	URI            string `gorm:"uniqueIndex;size:128;not null"`
-	Name           string `gorm:"size:64;uniqueIndex:idx_actor_name_domain;not null"`
-	Domain         string `gorm:"size:64;uniqueIndex:idx_actor_name_domain;not null"`
-	DisplayName    string `gorm:"size:128;not null"`
-	Locked         bool   `gorm:"default:false;not null"`
-	Note           string `gorm:"type:text"` // max 2^16
-	FollowersCount int32  `gorm:"default:0;not null"`
-	FollowingCount int32  `gorm:"default:0;not null"`
-	StatusesCount  int32  `gorm:"default:0;not null"`
+	Type           ActorType `gorm:"type:actor_type;default:'Person';not null"`
+	URI            string    `gorm:"uniqueIndex;size:128;not null"`
+	Name           string    `gorm:"size:64;uniqueIndex:idx_actor_name_domain;not null"`
+	Domain         string    `gorm:"size:64;uniqueIndex:idx_actor_name_domain;not null"`
+	DisplayName    string    `gorm:"size:128;not null"`
+	Locked         bool      `gorm:"default:false;not null"`
+	Note           string    `gorm:"type:text"` // max 2^16
+	FollowersCount int32     `gorm:"default:0;not null"`
+	FollowingCount int32     `gorm:"default:0;not null"`
+	StatusesCount  int32     `gorm:"default:0;not null"`
 	LastStatusAt   time.Time
 	Avatar         string            `gorm:"size:255"`
 	Header         string            `gorm:"size:255"`

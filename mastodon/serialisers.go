@@ -573,7 +573,7 @@ func (s *Serialiser) List(l *models.AccountList) *List {
 	return &List{
 		ID:            l.ID,
 		Title:         l.Title,
-		RepliesPolicy: l.RepliesPolicy,
+		RepliesPolicy: string(l.RepliesPolicy),
 	}
 }
 
