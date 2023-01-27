@@ -43,12 +43,32 @@ const (
 )
 
 func (t *ActorType) Scan(value interface{}) error {
-	*t = ActorType(value.([]byte))
+	var pt ActorType
+	if value == nil {
+		*t = ""
+		return nil
+	}
+	st, ok := value.([]uint8)
+	if !ok {
+		return errors.New("Invalid data for actor type")
+	}
+
+	pt = ActorType(string(st))
+
+	switch pt {
+	case PersonActorType, ApplicationActorType, ServiceActorType, GroupActorType, OrganizationActorType, LocalPersonActorType:
+		*t = pt
+		return nil
+	}
 	return nil
 }
 
 func (t ActorType) Value() (driver.Value, error) {
-	return string(t), nil
+	switch t {
+	case PersonActorType, ApplicationActorType, ServiceActorType, GroupActorType, OrganizationActorType, LocalPersonActorType:
+		return string(t), nil
+	}
+	return nil, errors.New("Invalid actor type value")
 }
 
 func (a *Actor) AfterCreate(tx *gorm.DB) error {
