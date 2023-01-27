@@ -110,3 +110,7 @@ Thank you in advance for your understanding.
 [requests]: https://github.com/carlmjohnson/requests/
 [go]: https://golang.org/doc/install
 [mariadb]: https://mariadb.org/download/
+
+## notes
+
+https://github.com/foolish15/example-gorm-enum/blob/master/main.go
