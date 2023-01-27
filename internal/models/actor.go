@@ -42,13 +42,13 @@ const (
 	LocalPersonActorType  ActorType = "LocalPerson"
 )
 
-func (self *ActorType) Scan(value interface{}) error {
-	*self = ActorType(value.([]byte))
+func (t *ActorType) Scan(value interface{}) error {
+	*t = ActorType(value.([]byte))
 	return nil
 }
 
-func (self ActorType) Value() (driver.Value, error) {
-	return string(self), nil
+func (t ActorType) Value() (driver.Value, error) {
+	return string(t), nil
 }
 
 func (a *Actor) AfterCreate(tx *gorm.DB) error {

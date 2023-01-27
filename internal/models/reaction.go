@@ -105,13 +105,13 @@ const (
 	UnlikeActionType ActionType = "unlike"
 )
 
-func (self *ActionType) Scan(value interface{}) error {
-	*self = ActionType(value.([]byte))
+func (t *ActionType) Scan(value interface{}) error {
+	*t = ActionType(value.([]byte))
 	return nil
 }
 
-func (self ActionType) Value() (driver.Value, error) {
-	return string(self), nil
+func (t ActionType) Value() (driver.Value, error) {
+	return string(t), nil
 }
 
 type Reactions struct {

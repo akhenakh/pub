@@ -21,11 +21,11 @@ const (
 	LimitedVisibility  Visibility = "limited"
 )
 
-func (self *Visibility) Scan(value interface{}) error {
-	*self = Visibility(value.([]byte))
+func (v *Visibility) Scan(value interface{}) error {
+	*v = Visibility(value.([]byte))
 	return nil
 }
 
-func (self Visibility) Value() (driver.Value, error) {
-	return string(self), nil
+func (v Visibility) Value() (driver.Value, error) {
+	return string(v), nil
 }

@@ -112,13 +112,13 @@ const (
 	UnFollowAction Action = "unfollow"
 )
 
-func (self *Action) Scan(value interface{}) error {
-	*self = Action(value.([]byte))
+func (a *Action) Scan(value interface{}) error {
+	*a = Action(value.([]byte))
 	return nil
 }
 
-func (self Action) Value() (driver.Value, error) {
-	return string(self), nil
+func (a Action) Value() (driver.Value, error) {
+	return string(a), nil
 }
 
 type Relationships struct {
