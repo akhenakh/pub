@@ -18,6 +18,10 @@ type Conversation struct {
 	Visibility string `gorm:"type:enum('public', 'unlisted', 'private', 'direct', 'limited');not null"`
 }
 
+type Conversations struct {
+	db *gorm.DB
+}
+
 func NewConversations(db *gorm.DB) *Conversations {
 	return &Conversations{
 		db: db,

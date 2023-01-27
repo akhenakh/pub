@@ -5,15 +5,9 @@ import (
 	"errors"
 
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
-	"gorm.io/gorm"
 )
 
-type (
-	Visibility    string
-	Conversations struct {
-		db *gorm.DB
-	}
-)
+type Visibility string
 
 const (
 	PublicVisibility   Visibility = "public"
