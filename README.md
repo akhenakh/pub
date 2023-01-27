@@ -24,7 +24,7 @@ _Warning: `pub` is still in development, if it breaks, you can keep the pieces._
 - [Go][go]
 - [MariaDB][mariadb]
 
-### Installation
+### Installation for MySQL
 
 Create a database and user for `pub`:
 
@@ -44,7 +44,7 @@ Create/migrate the database:
 pub --dsn 'pub:pub@/pub' auto-migrate
 ```
 
-### Setup
+### Setup for MySQL
 
 Create an instance for `pub`:
 
@@ -62,13 +62,19 @@ pub --dsn 'pub:pub@/pub' create-account --email you@domain.com --name you --doma
 
 This will create an account for you to act as `acct:you@domain.com`
 
-### Running
+### Running for MySQL
 
 Start `pub`:
 
 ```bash
 pub --log-http --dsn 'pub:pub@/pub' serve 
 ```    
+
+## Setup for SQLite
+
+`pub  --driver sqlite --dsn db.sqlite auto-migrate`
+
+`pub --driver sqlite --dsn db.sqlite create-instance --domain domain.com --title "yeah" --description "Geeking" --admin-email amdin@mydomain`
 
 ### Getting online
 
